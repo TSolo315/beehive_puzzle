@@ -1,5 +1,5 @@
 class HiveBoard {
-    constructor(board, hive, simButton, updateList) {
+    constructor(board, hive, simButton, updateList = []) {
         this.board = board;
         this.hive = hive;
         this.simButton = simButton;
@@ -125,7 +125,6 @@ const setup = {
     hive: document.querySelector('.hive'),
     simButton: document.querySelector('.sim-button'),
     beeCounter: document.querySelector('.bee-counter'),
-    updateList: [],
     gameSession: new GameSession(0, 0),
     gameLayout: null,
     hiveBoard: null,
@@ -146,7 +145,7 @@ const setup = {
     startGame() {
         this.gameLayout = this.gameSession.createLayout();
         this.mapLayoutInitial(this.hive, this.gameLayout);
-        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton, this.updateList);
+        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton);
         this.hiveBoard.clickToAddBee();
         this.hiveBoard.clickToSimulate();
     }

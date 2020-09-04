@@ -2,8 +2,8 @@ declare class HiveBoard {
     board: boolean[][];
     hive: HTMLDivElement;
     simButton: HTMLButtonElement;
-    updateList: number[][];
-    constructor(board: boolean[][], hive: HTMLDivElement, simButton: HTMLButtonElement, updateList: number[][]);
+    private updateList;
+    constructor(board: boolean[][], hive: HTMLDivElement, simButton: HTMLButtonElement, updateList?: number[][]);
     addBee(y: number, x: number): void;
     processStep(): boolean;
     simulate(): Promise<void>;
@@ -25,7 +25,6 @@ declare type Setup = {
     hive: HTMLDivElement;
     simButton: HTMLButtonElement;
     beeCounter: HTMLParagraphElement;
-    updateList: number[][];
     gameSession: GameSession;
     gameLayout: boolean[][];
     hiveBoard: HiveBoard;

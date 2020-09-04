@@ -1,6 +1,6 @@
 class HiveBoard {
 
-    constructor(public board: boolean[][], public hive: HTMLDivElement, public simButton: HTMLButtonElement, public updateList: number[][]) {
+    constructor(public board: boolean[][], public hive: HTMLDivElement, public simButton: HTMLButtonElement, private updateList: number[][]=[]) {
 
     }
 
@@ -134,7 +134,6 @@ type Setup = {
     hive: HTMLDivElement,
     simButton: HTMLButtonElement,
     beeCounter: HTMLParagraphElement,
-    updateList: number[][],
     gameSession: GameSession,
     gameLayout: boolean[][],
     hiveBoard: HiveBoard,
@@ -148,13 +147,12 @@ const setup: Setup = {
     hive: document.querySelector('.hive'),
     simButton: document.querySelector('.sim-button'),
     beeCounter: document.querySelector('.bee-counter'),
-    updateList: [],
     gameSession: new GameSession(0,0),
     gameLayout: null,
     hiveBoard: null,
 
 
-    mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]) {
+    mapLayoutInitial(hive, layout) {
         for (let [count, row] of utilities.enumerate(layout)) {
             let hive_row = document.createElement('div'); 
             hive_row.setAttribute('class', 'row');
@@ -172,7 +170,7 @@ const setup: Setup = {
     startGame() {
         this.gameLayout = this.gameSession.createLayout();
         this.mapLayoutInitial(this.hive, this.gameLayout)
-        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton, this.updateList);
+        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton);
         this.hiveBoard.clickToAddBee();
         this.hiveBoard.clickToSimulate();
     }
