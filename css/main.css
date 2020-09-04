@@ -9,7 +9,7 @@
   }
   .hexagon {
       width: 50px;
-      height: 40px;
+      height: 30px;
       background: grey;
       position: relative;
     display:inline-block;
@@ -39,4 +39,23 @@
   }
   .row{
   margin-top:0.4em;
+}
+
+.buzz {
+  background: orange;
+}
+
+.buzz:before {
+  border-bottom: 12.5px solid orange;
+}
+.buzz:after {
+  border-top: 12.5px solid orange;
+}
+
+.sim-button {
+  margin: 0 auto;
+  text-align: center;
+  width: 300px;
+  color: white;
+  z-index: 99
 }

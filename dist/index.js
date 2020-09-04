@@ -1,7 +1,8 @@
-"use strict";
 class HiveBoard {
-    constructor(board) {
+    constructor(board, hive, simButton) {
         this.board = board;
+        this.hive = hive;
+        this.simButton = simButton;
     }
     addBee(y, x) {
         this.board[y][x] = true;
@@ -10,37 +11,29 @@ class HiveBoard {
         let addedBee = false;
         for (let [count, row] of enumerate(this.board)) {
             row.forEach((tile, index) => {
-                console.log(`${count}, ${index}`);
                 if (!tile) {
                     let adjacent_tile_count = 0;
                     let up_index = (count > 5) ? index + 1 : index - 1;
                     let down_index = (count > 4) ? index - 1 : index + 1;
                     if (this.board[count - 1] != undefined && this.board[count - 1][index]) {
                         adjacent_tile_count += 1;
-                        console.log(`hit ${count - 1} ${index} t`);
                     }
                     if (this.board[count - 1] != undefined && this.board[count - 1][up_index]) {
                         adjacent_tile_count += 1;
-                        console.log(`hit ${count - 1} ${up_index} t`);
                     }
                     if (this.board[count][index - 1]) {
                         adjacent_tile_count += 1;
-                        console.log(`hit ${count} ${index - 1} l`);
                     }
                     if (this.board[count][index + 1]) {
                         adjacent_tile_count += 1;
-                        console.log(`hit ${count} ${index + 1} r`);
                     }
                     if (this.board[count + 1] != undefined && this.board[count + 1][index]) {
                         adjacent_tile_count += 1;
-                        console.log(`hit ${count + 1} ${index} b`);
                     }
                     if (this.board[count + 1] != undefined && this.board[count + 1][down_index]) {
                         adjacent_tile_count += 1;
-                        console.log(`hit ${count + 1} ${down_index} b`);
                     }
                     if (adjacent_tile_count >= 3) {
-                        console.log(`New Bee ${count} ${index}`);
                         this.addBee(count, index);
                         addedBee = true;
                     }
@@ -48,6 +41,9 @@ class HiveBoard {
             });
         }
         ;
+        if (addedBee) {
+            this.updateHive();
+        }
         return addedBee;
     }
     simulate() {
@@ -56,14 +52,41 @@ class HiveBoard {
                 break;
         }
     }
+    clickToAddBee() {
+        this.hive.addEventListener("click", (event) => {
+            const element = event.target;
+            if (element.classList.contains('hexagon')) {
+                let y_coordinate = parseInt(element.getAttribute('data-y-coordinate'));
+                let x_coordinate = parseInt(element.getAttribute('data-x-coordinate'));
+                this.addBee(y_coordinate, x_coordinate);
+                this.updateHive();
+            }
+        });
+    }
+    clickToSimulate() {
+        this.simButton.addEventListener("click", (event) => {
+            this.simulate();
+        });
+    }
+    updateHive() {
+        for (let [count, row] of enumerate(this.board)) {
+            row.forEach((tile, index) => {
+                if (tile) {
+                    let selector = `div[data-y-coordinate="${count}"][data-x-coordinate="${index}"]`;
+                    let board_tile = this.hive.querySelector(selector);
+                    board_tile.setAttribute('class', 'hexagon buzz');
+                }
+            });
+        }
+    }
 }
 const createLayout = function () {
     const board = [];
     let reverse = false;
     let base_number = 11;
-    for (let i = 0; i < 11; i++) {
+    for (let i = 0; i < 11; i++) { // rows
         let row = [];
-        for (let j = 0; j < base_number; j++) {
+        for (let j = 0; j < base_number; j++) { // tiles
             row.push(false);
         }
         board.push(row);
@@ -87,8 +110,8 @@ function* enumerate(iterable) {
         i++;
     }
 }
-function mapLayoutInitial() {
-    let hive = document.querySelector('.hive');
+function mapLayoutInitial(hiveElement) {
+    let hive = hiveElement;
     let layout = createLayout();
     for (let [count, row] of enumerate(layout)) {
         let hive_row = document.createElement('div');
@@ -97,23 +120,16 @@ function mapLayoutInitial() {
         row.forEach((tile, index) => {
             let hive_tile = document.createElement('div');
             hive_tile.setAttribute('class', 'hexagon');
-            hive_tile.setAttribute('data-y-coordinate', index.toString());
-            hive_tile.setAttribute('data-x-coordinate', count);
+            hive_tile.setAttribute('data-y-coordinate', count);
+            hive_tile.setAttribute('data-x-coordinate', index.toString());
             hive_row.appendChild(hive_tile);
         });
     }
 }
-mapLayoutInitial();
-// const new_layout = createLayout()
-// let theBoard = new HiveBoard(new_layout)
-// theBoard.addBee(0, 1)
-// theBoard.addBee(1, 1)
-// theBoard.addBee(1, 2)
-// theBoard.addBee(1, 3)
-// theBoard.addBee(2, 1)
-// theBoard.addBee(3, 1)
-// theBoard.addBee(4, 1)
-// theBoard.addBee(5, 1)
-// theBoard.addBee(3, 2)
-// theBoard.simulate()
-// console.log(theBoard)
+const hive = document.querySelector('.hive');
+const simButton = document.querySelector('.sim-button');
+mapLayoutInitial(hive);
+const new_layout = createLayout();
+const hiveBoard = new HiveBoard(new_layout, hive, simButton);
+hiveBoard.clickToAddBee();
+hiveBoard.clickToSimulate();

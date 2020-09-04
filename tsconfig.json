@@ -7,7 +7,7 @@
     "declaration": true,
     "noImplicitReturns": true,
     "suppressExcessPropertyErrors": true,
-    "strict": true
+    "noImplicitAny": true,
     }
 }
     
