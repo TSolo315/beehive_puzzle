@@ -1,11 +1,13 @@
 class HiveBoard {
-    constructor(board, hive, simButton) {
+    constructor(board, hive, simButton, updateList) {
         this.board = board;
         this.hive = hive;
         this.simButton = simButton;
+        this.updateList = updateList;
     }
     addBee(y, x) {
         this.board[y][x] = true;
+        this.updateList.push([y, x]);
     }
     processStep() {
         let addedBee = false;
@@ -70,15 +72,21 @@ class HiveBoard {
         });
     }
     updateHive() {
-        for (let [count, row] of enumerate(this.board)) {
-            row.forEach((tile, index) => {
-                if (tile) {
-                    let selector = `div[data-y-coordinate="${count}"][data-x-coordinate="${index}"]`;
-                    let board_tile = this.hive.querySelector(selector);
-                    board_tile.setAttribute('class', 'hexagon buzz');
-                }
-            });
+        // for (let [count, row] of enumerate(this.board)) { // innefficient
+        //     row.forEach((tile: boolean, index: number)  => {
+        //         if (tile) {
+        //             let selector = `div[data-y-coordinate="${count}"][data-x-coordinate="${index}"]`
+        //             let board_tile = this.hive.querySelector(selector);
+        //             board_tile!.setAttribute('class', 'hexagon buzz');
+        //         }
+        //     });
+        // }
+        for (let entry of this.updateList) {
+            let selector = `div[data-y-coordinate="${entry[0]}"][data-x-coordinate="${entry[1]}"]`;
+            let board_tile = this.hive.querySelector(selector);
+            board_tile.setAttribute('class', 'hexagon buzz');
         }
+        this.updateList.length = 0;
     }
 }
 const createLayout = function () {
@@ -132,6 +140,7 @@ const hive = document.querySelector('.hive');
 const simButton = document.querySelector('.sim-button');
 const new_layout = createLayout();
 mapLayoutInitial(hive, new_layout);
-const hiveBoard = new HiveBoard(new_layout, hive, simButton);
+const update_list = [];
+const hiveBoard = new HiveBoard(new_layout, hive, simButton, update_list);
 hiveBoard.clickToAddBee();
 hiveBoard.clickToSimulate();

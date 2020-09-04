@@ -1,11 +1,12 @@
 class HiveBoard {
 
-    constructor(public board: boolean[][], public hive: HTMLDivElement, public simButton: HTMLButtonElement) {
+    constructor(public board: boolean[][], public hive: HTMLDivElement, public simButton: HTMLButtonElement, public updateList: number[][]) {
 
     }
 
     addBee(y: number, x: number): void {
         this.board[y][x] = true
+        this.updateList.push([y,x])
     }
 
     processStep(): boolean {
@@ -75,18 +76,26 @@ class HiveBoard {
     }
 
     updateHive(): void {
-        for (let [count, row] of enumerate(this.board)) {
-            row.forEach((tile: boolean, index: number)  => {
-                if (tile) {
-                    let selector = `div[data-y-coordinate="${count}"][data-x-coordinate="${index}"]`
-                    let board_tile = this.hive.querySelector(selector);
-                    board_tile!.setAttribute('class', 'hexagon buzz');
-                }
-            });
+        // for (let [count, row] of enumerate(this.board)) { // innefficient
+        //     row.forEach((tile: boolean, index: number)  => {
+        //         if (tile) {
+        //             let selector = `div[data-y-coordinate="${count}"][data-x-coordinate="${index}"]`
+        //             let board_tile = this.hive.querySelector(selector);
+        //             board_tile!.setAttribute('class', 'hexagon buzz');
+        //         }
+        //     });
+        // }
+        for (let entry of this.updateList) {
+            let selector = `div[data-y-coordinate="${entry[0]}"][data-x-coordinate="${entry[1]}"]`
+            let board_tile = this.hive.querySelector(selector);
+            board_tile!.setAttribute('class', 'hexagon buzz');
         }
+        this.updateList.length = 0
     }
 }
-
+/**
+ * 
+ */
 const createLayout = function(): boolean[][] {
     const board = []
     let reverse = false
@@ -127,13 +136,13 @@ function mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]) {
     for (let [count, row] of enumerate(layout)) {
         let hive_row = document.createElement('div'); 
         hive_row.setAttribute('class', 'row');
-        hive!.appendChild(hive_row);
+        hive.appendChild(hive_row);
         row.forEach((tile: boolean, index: number) => {
             let hive_tile = document.createElement('div');
             hive_tile.setAttribute('class', 'hexagon');
             hive_tile.setAttribute('data-y-coordinate', count);
             hive_tile.setAttribute('data-x-coordinate', index.toString());
-            hive_row!.appendChild(hive_tile);
+            hive_row.appendChild(hive_tile);
         })
     }
 }
@@ -142,6 +151,7 @@ const hive: HTMLDivElement = document.querySelector('.hive');
 const simButton: HTMLButtonElement = document.querySelector('.sim-button');
 const new_layout = createLayout();
 mapLayoutInitial(hive, new_layout);
-const hiveBoard = new HiveBoard(new_layout, hive, simButton);
+const update_list: number[][] = []
+const hiveBoard = new HiveBoard(new_layout, hive, simButton, update_list);
 hiveBoard.clickToAddBee();
 hiveBoard.clickToSimulate();

@@ -2,7 +2,8 @@ declare class HiveBoard {
     board: boolean[][];
     hive: HTMLDivElement;
     simButton: HTMLButtonElement;
-    constructor(board: boolean[][], hive: HTMLDivElement, simButton: HTMLButtonElement);
+    updateList: number[][];
+    constructor(board: boolean[][], hive: HTMLDivElement, simButton: HTMLButtonElement, updateList: number[][]);
     addBee(y: number, x: number): void;
     processStep(): boolean;
     simulate(): Promise<void>;
@@ -17,4 +18,5 @@ declare function mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]): vo
 declare const hive: HTMLDivElement;
 declare const simButton: HTMLButtonElement;
 declare const new_layout: boolean[][];
+declare const update_list: number[][];
 declare const hiveBoard: HiveBoard;
