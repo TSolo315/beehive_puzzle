@@ -2,14 +2,17 @@ declare class HiveBoard {
     board: boolean[][];
     hive: HTMLDivElement;
     simButton: HTMLButtonElement;
+    beeCounter: HTMLParagraphElement;
+    gameSession: GameSession;
     private updateList;
-    constructor(board: boolean[][], hive: HTMLDivElement, simButton: HTMLButtonElement, updateList?: number[][]);
+    constructor(board: boolean[][], hive: HTMLDivElement, simButton: HTMLButtonElement, beeCounter: HTMLParagraphElement, gameSession: GameSession, updateList?: number[][]);
     addBee(y: number, x: number): void;
     removeBee(y: number, x: number): void;
     processStep(): boolean;
     simulate(): Promise<void>;
     clickToAddRemoveBee(): void;
     clickToSimulate(): void;
+    updateBeeCounter(removed?: boolean): void;
     updateHive(): void;
 }
 declare class GameSession {
