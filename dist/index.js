@@ -110,9 +110,7 @@ function* enumerate(iterable) {
         i++;
     }
 }
-function mapLayoutInitial(hiveElement) {
-    let hive = hiveElement;
-    let layout = createLayout();
+function mapLayoutInitial(hive, layout) {
     for (let [count, row] of enumerate(layout)) {
         let hive_row = document.createElement('div');
         hive_row.setAttribute('class', 'row');
@@ -128,8 +126,8 @@ function mapLayoutInitial(hiveElement) {
 }
 const hive = document.querySelector('.hive');
 const simButton = document.querySelector('.sim-button');
-mapLayoutInitial(hive);
 const new_layout = createLayout();
+mapLayoutInitial(hive, new_layout);
 const hiveBoard = new HiveBoard(new_layout, hive, simButton);
 hiveBoard.clickToAddBee();
 hiveBoard.clickToSimulate();

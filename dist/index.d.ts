@@ -12,7 +12,7 @@ declare class HiveBoard {
 }
 declare const createLayout: () => boolean[][];
 declare function enumerate(iterable: any): Generator<any[], void, unknown>;
-declare function mapLayoutInitial(hiveElement: HTMLDivElement): void;
+declare function mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]): void;
 declare const hive: HTMLDivElement;
 declare const simButton: HTMLButtonElement;
 declare const new_layout: boolean[][];

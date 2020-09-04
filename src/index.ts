@@ -117,9 +117,7 @@ function* enumerate(iterable: any) {
     }
 }
 
-function mapLayoutInitial(hiveElement: HTMLDivElement) {
-    let hive = hiveElement
-    let layout = createLayout();
+function mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]) {
     for (let [count, row] of enumerate(layout)) {
         let hive_row = document.createElement('div'); 
         hive_row.setAttribute('class', 'row');
@@ -136,8 +134,8 @@ function mapLayoutInitial(hiveElement: HTMLDivElement) {
 
 const hive: HTMLDivElement = document.querySelector('.hive')
 const simButton: HTMLButtonElement = document.querySelector('.sim-button')
-mapLayoutInitial(hive)
 const new_layout = createLayout()
+mapLayoutInitial(hive, new_layout)
 const hiveBoard = new HiveBoard(new_layout, hive, simButton)
 hiveBoard.clickToAddBee()
 hiveBoard.clickToSimulate();
