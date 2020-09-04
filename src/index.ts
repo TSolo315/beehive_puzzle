@@ -9,6 +9,13 @@ class HiveBoard {
         this.updateList.push([y,x])
     }
 
+    removeBee(y: number, x: number): void {
+        this.board[y][x] = false
+        let selector = `div[data-y-coordinate="${y}"][data-x-coordinate="${x}"]`
+        let board_tile = this.hive.querySelector(selector);
+        board_tile.setAttribute('class', 'hexagon');
+    }
+
     processStep(): boolean {
         let addedBee: boolean = false
         for (let [count, row] of utilities.enumerate(this.board)) {
@@ -57,14 +64,18 @@ class HiveBoard {
         }
     }
 
-    clickToAddBee(): void {
+    clickToAddRemoveBee(): void {
         this.hive.addEventListener("click", (event) => {
             const element = event.target as HTMLDivElement;
             if (element.classList.contains('hexagon')) {
                 let y_coordinate: number = parseInt(element.getAttribute('data-y-coordinate')!);
                 let x_coordinate: number = parseInt(element.getAttribute('data-x-coordinate')!);
-                this.addBee(y_coordinate, x_coordinate);
-                this.updateHive()
+                if (this.board[y_coordinate][x_coordinate]) {
+                    this.removeBee(y_coordinate, x_coordinate)
+                } else {
+                    this.addBee(y_coordinate, x_coordinate);
+                    this.updateHive()
+                }
             }
         });
     }
@@ -79,7 +90,7 @@ class HiveBoard {
         for (let entry of this.updateList) {
             let selector = `div[data-y-coordinate="${entry[0]}"][data-x-coordinate="${entry[1]}"]`
             let board_tile = this.hive.querySelector(selector);
-            board_tile!.setAttribute('class', 'hexagon buzz');
+            board_tile.setAttribute('class', 'hexagon buzz');
         }
         this.updateList.length = 0
     }
@@ -171,19 +182,9 @@ const setup: Setup = {
         this.gameLayout = this.gameSession.createLayout();
         this.mapLayoutInitial(this.hive, this.gameLayout)
         this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton);
-        this.hiveBoard.clickToAddBee();
+        this.hiveBoard.clickToAddRemoveBee();
         this.hiveBoard.clickToSimulate();
     }
 }
-
-// const hive: HTMLDivElement = document.querySelector('.hive');
-// const simButton: HTMLButtonElement = document.querySelector('.sim-button');
-// const gameSession = new GameSession(1,2)
-// const new_layout = game_session.createLayout();
-// setup.mapLayoutInitial(hive, new_layout);
-// const update_list: number[][] = []
-// const hiveBoard = new HiveBoard(new_layout, hive, simButton, update_list);
-// hiveBoard.clickToAddBee();
-// hiveBoard.clickToSimulate();
 
 setup.startGame()

@@ -5,9 +5,10 @@ declare class HiveBoard {
     private updateList;
     constructor(board: boolean[][], hive: HTMLDivElement, simButton: HTMLButtonElement, updateList?: number[][]);
     addBee(y: number, x: number): void;
+    removeBee(y: number, x: number): void;
     processStep(): boolean;
     simulate(): Promise<void>;
-    clickToAddBee(): void;
+    clickToAddRemoveBee(): void;
     clickToSimulate(): void;
     updateHive(): void;
 }
