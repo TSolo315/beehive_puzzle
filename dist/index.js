@@ -11,7 +11,7 @@ class HiveBoard {
     }
     processStep() {
         let addedBee = false;
-        for (let [count, row] of enumerate(this.board)) {
+        for (let [count, row] of utilities.enumerate(this.board)) {
             row.forEach((tile, index) => {
                 if (!tile) {
                     let adjacent_tile_count = 0;
@@ -50,7 +50,7 @@ class HiveBoard {
     }
     async simulate() {
         while (true) {
-            await sleep(1000);
+            await utilities.sleep(1000);
             if (!this.processStep())
                 break;
         }
@@ -72,15 +72,6 @@ class HiveBoard {
         });
     }
     updateHive() {
-        // for (let [count, row] of enumerate(this.board)) { // innefficient
-        //     row.forEach((tile: boolean, index: number)  => {
-        //         if (tile) {
-        //             let selector = `div[data-y-coordinate="${count}"][data-x-coordinate="${index}"]`
-        //             let board_tile = this.hive.querySelector(selector);
-        //             board_tile!.setAttribute('class', 'hexagon buzz');
-        //         }
-        //     });
-        // }
         for (let entry of this.updateList) {
             let selector = `div[data-y-coordinate="${entry[0]}"][data-x-coordinate="${entry[1]}"]`;
             let board_tile = this.hive.querySelector(selector);
@@ -89,58 +80,84 @@ class HiveBoard {
         this.updateList.length = 0;
     }
 }
-const createLayout = function () {
-    const board = [];
-    let reverse = false;
-    let base_number = 11;
-    for (let i = 0; i < 11; i++) { // rows
-        let row = [];
-        for (let j = 0; j < base_number; j++) { // tiles
-            row.push(false);
-        }
-        board.push(row);
-        if (base_number < 16 && !reverse) {
-            base_number += 1;
-        }
-        else if (base_number === 16) {
-            reverse = true;
-            base_number -= 1;
-        }
-        else {
-            base_number -= 1;
-        }
-    }
-    return board;
-};
-function* enumerate(iterable) {
-    let i = 0;
-    for (const x of iterable) {
-        yield [i, x];
-        i++;
-    }
-}
-const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-};
-function mapLayoutInitial(hive, layout) {
-    for (let [count, row] of enumerate(layout)) {
-        let hive_row = document.createElement('div');
-        hive_row.setAttribute('class', 'row');
-        hive.appendChild(hive_row);
-        row.forEach((tile, index) => {
-            let hive_tile = document.createElement('div');
-            hive_tile.setAttribute('class', 'hexagon');
-            hive_tile.setAttribute('data-y-coordinate', count);
-            hive_tile.setAttribute('data-x-coordinate', index.toString());
-            hive_row.appendChild(hive_tile);
-        });
+class GameSession {
+    constructor(beesAdded, turnsTaken) {
+        this.beesAdded = beesAdded;
+        this.turnsTaken = turnsTaken;
+        this.createLayout = function () {
+            const board = [];
+            let reverse = false;
+            let base_number = 11;
+            for (let i = 0; i < 11; i++) { // rows
+                let row = [];
+                for (let j = 0; j < base_number; j++) { // tiles
+                    row.push(false);
+                }
+                board.push(row);
+                if (base_number < 16 && !reverse) {
+                    base_number += 1;
+                }
+                else if (base_number === 16) {
+                    reverse = true;
+                    base_number -= 1;
+                }
+                else {
+                    base_number -= 1;
+                }
+            }
+            return board;
+        };
     }
 }
-const hive = document.querySelector('.hive');
-const simButton = document.querySelector('.sim-button');
-const new_layout = createLayout();
-mapLayoutInitial(hive, new_layout);
-const update_list = [];
-const hiveBoard = new HiveBoard(new_layout, hive, simButton, update_list);
-hiveBoard.clickToAddBee();
-hiveBoard.clickToSimulate();
+const utilities = {
+    sleep(milliseconds) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
+    },
+    *enumerate(iterable) {
+        let i = 0;
+        for (const x of iterable) {
+            yield [i, x];
+            i++;
+        }
+    }
+};
+const setup = {
+    hive: document.querySelector('.hive'),
+    simButton: document.querySelector('.sim-button'),
+    beeCounter: document.querySelector('.bee-counter'),
+    updateList: [],
+    gameSession: new GameSession(0, 0),
+    gameLayout: null,
+    hiveBoard: null,
+    mapLayoutInitial(hive, layout) {
+        for (let [count, row] of utilities.enumerate(layout)) {
+            let hive_row = document.createElement('div');
+            hive_row.setAttribute('class', 'row');
+            hive.appendChild(hive_row);
+            row.forEach((tile, index) => {
+                let hive_tile = document.createElement('div');
+                hive_tile.setAttribute('class', 'hexagon');
+                hive_tile.setAttribute('data-y-coordinate', count);
+                hive_tile.setAttribute('data-x-coordinate', index.toString());
+                hive_row.appendChild(hive_tile);
+            });
+        }
+    },
+    startGame() {
+        this.gameLayout = this.gameSession.createLayout();
+        this.mapLayoutInitial(this.hive, this.gameLayout);
+        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton, this.updateList);
+        this.hiveBoard.clickToAddBee();
+        this.hiveBoard.clickToSimulate();
+    }
+};
+// const hive: HTMLDivElement = document.querySelector('.hive');
+// const simButton: HTMLButtonElement = document.querySelector('.sim-button');
+// const gameSession = new GameSession(1,2)
+// const new_layout = game_session.createLayout();
+// setup.mapLayoutInitial(hive, new_layout);
+// const update_list: number[][] = []
+// const hiveBoard = new HiveBoard(new_layout, hive, simButton, update_list);
+// hiveBoard.clickToAddBee();
+// hiveBoard.clickToSimulate();
+setup.startGame();

@@ -11,12 +11,25 @@ declare class HiveBoard {
     clickToSimulate(): void;
     updateHive(): void;
 }
-declare const createLayout: () => boolean[][];
-declare function enumerate(iterable: any): Generator<any[], void, unknown>;
-declare const sleep: (milliseconds: number) => Promise<unknown>;
-declare function mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]): void;
-declare const hive: HTMLDivElement;
-declare const simButton: HTMLButtonElement;
-declare const new_layout: boolean[][];
-declare const update_list: number[][];
-declare const hiveBoard: HiveBoard;
+declare class GameSession {
+    beesAdded: number;
+    turnsTaken: number;
+    constructor(beesAdded: number, turnsTaken: number);
+    createLayout: () => boolean[][];
+}
+declare const utilities: {
+    sleep(milliseconds: number): Promise<unknown>;
+    enumerate(iterable: any): Generator<any[], void, unknown>;
+};
+declare type Setup = {
+    hive: HTMLDivElement;
+    simButton: HTMLButtonElement;
+    beeCounter: HTMLParagraphElement;
+    updateList: number[][];
+    gameSession: GameSession;
+    gameLayout: boolean[][];
+    hiveBoard: HiveBoard;
+    mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]): void;
+    startGame(): void;
+};
+declare const setup: Setup;
