@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+    "target": "ES2019",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitReturns": true,
+    "suppressExcessPropertyErrors": true,
+    "strict": true
+    }
+}
+    

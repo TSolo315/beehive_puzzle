@@ -1,0 +1,42 @@
+*{
+    background-color:black;
+  }
+  section{
+    margin-top:3em;
+    display:flex;
+    flex-flow: column;
+    align-items: center;
+  }
+  .hexagon {
+      width: 50px;
+      height: 40px;
+      background: grey;
+      position: relative;
+    display:inline-block;
+    margin:0.2em;
+  }
+  .hexagon:before {
+      content: "";
+      position: absolute;
+      top: -12.5px;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 12.5px solid grey;
+  }
+  .hexagon:after {
+      content: "";
+      position: absolute;
+      bottom: -12.5px;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-top: 12.5px solid grey;
+  }
+  .row{
+  margin-top:0.4em;
+}
