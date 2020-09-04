@@ -46,8 +46,9 @@ class HiveBoard {
         }
         return addedBee;
     }
-    simulate() {
+    async simulate() {
         while (true) {
+            await sleep(1000);
             if (!this.processStep())
                 break;
         }
@@ -110,6 +111,9 @@ function* enumerate(iterable) {
         i++;
     }
 }
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+};
 function mapLayoutInitial(hive, layout) {
     for (let [count, row] of enumerate(layout)) {
         let hive_row = document.createElement('div');

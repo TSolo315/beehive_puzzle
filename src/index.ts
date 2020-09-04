@@ -48,8 +48,9 @@ class HiveBoard {
         return addedBee
     }
 
-    simulate(): void {
+    async simulate(): Promise<void> {
         while (true) {
+            await sleep(1000)
             if (!this.processStep())
                 break
         }
@@ -117,6 +118,11 @@ function* enumerate(iterable: any) {
     }
 }
 
+const sleep = (milliseconds: number) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+  
+
 function mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]) {
     for (let [count, row] of enumerate(layout)) {
         let hive_row = document.createElement('div'); 
@@ -132,10 +138,10 @@ function mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]) {
     }
 }
 
-const hive: HTMLDivElement = document.querySelector('.hive')
-const simButton: HTMLButtonElement = document.querySelector('.sim-button')
-const new_layout = createLayout()
-mapLayoutInitial(hive, new_layout)
-const hiveBoard = new HiveBoard(new_layout, hive, simButton)
-hiveBoard.clickToAddBee()
+const hive: HTMLDivElement = document.querySelector('.hive');
+const simButton: HTMLButtonElement = document.querySelector('.sim-button');
+const new_layout = createLayout();
+mapLayoutInitial(hive, new_layout);
+const hiveBoard = new HiveBoard(new_layout, hive, simButton);
+hiveBoard.clickToAddBee();
 hiveBoard.clickToSimulate();
