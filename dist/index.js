@@ -1,11 +1,13 @@
 class HiveBoard {
-    constructor(board, hive, simButton, beeCounter, gameSession, updateList = []) {
+    constructor(board, hive, simButton, beeCounter, turnCounter, gameSession, updateList = []) {
         this.board = board;
         this.hive = hive;
         this.simButton = simButton;
         this.beeCounter = beeCounter;
+        this.turnCounter = turnCounter;
         this.gameSession = gameSession;
         this.updateList = updateList;
+        // autofilled
     }
     addBee(y, x) {
         this.board[y][x] = true;
@@ -52,6 +54,7 @@ class HiveBoard {
         }
         ;
         if (addedBee) {
+            this.incrementTurnCounter();
             this.updateHive();
         }
         return addedBee;
@@ -59,8 +62,9 @@ class HiveBoard {
     async simulate() {
         while (true) {
             await utilities.sleep(1000);
-            if (!this.processStep())
+            if (!this.processStep()) {
                 break;
+            }
         }
     }
     clickToAddRemoveBee() {
@@ -95,6 +99,10 @@ class HiveBoard {
         }
         this.beeCounter.innerHTML = `Bees Placed: ${this.gameSession.beesAdded}`;
     }
+    incrementTurnCounter() {
+        this.gameSession.turnsTaken += 1;
+        this.turnCounter.innerHTML = `Turns Taken: ${this.gameSession.turnsTaken}`;
+    }
     updateHive() {
         for (let entry of this.updateList) {
             let selector = `div[data-y-coordinate="${entry[0]}"][data-x-coordinate="${entry[1]}"]`;
@@ -103,34 +111,53 @@ class HiveBoard {
         }
         this.updateList.length = 0;
     }
+    resetBoard() {
+        this.board = this.gameSession.reset();
+        let tile_rows = this.hive.children;
+        for (let tile_row of tile_rows) {
+            for (let tile of tile_row.children) {
+                if (tile.classList.contains('buzz')) {
+                    tile.setAttribute('class', 'hexagon');
+                }
+            }
+        }
+        this.beeCounter.innerHTML = 'Bees Placed: 0';
+        this.turnCounter.innerHTML = 'Turns Taken: 0';
+    }
 }
 class GameSession {
     constructor(beesAdded, turnsTaken) {
         this.beesAdded = beesAdded;
         this.turnsTaken = turnsTaken;
-        this.createLayout = function () {
-            const board = [];
-            let reverse = false;
-            let base_number = 11;
-            for (let i = 0; i < 11; i++) { // rows
-                let row = [];
-                for (let j = 0; j < base_number; j++) { // tiles
-                    row.push(false);
-                }
-                board.push(row);
-                if (base_number < 16 && !reverse) {
-                    base_number += 1;
-                }
-                else if (base_number === 16) {
-                    reverse = true;
-                    base_number -= 1;
-                }
-                else {
-                    base_number -= 1;
-                }
+        // autofilled
+    }
+    createLayout() {
+        const board = [];
+        let reverse = false;
+        let base_number = 11;
+        for (let i = 0; i < 11; i++) { // rows
+            let row = [];
+            for (let j = 0; j < base_number; j++) { // tiles
+                row.push(false);
             }
-            return board;
-        };
+            board.push(row);
+            if (base_number < 16 && !reverse) {
+                base_number += 1;
+            }
+            else if (base_number === 16) {
+                reverse = true;
+                base_number -= 1;
+            }
+            else {
+                base_number -= 1;
+            }
+        }
+        return board;
+    }
+    reset() {
+        this.beesAdded = 0;
+        this.turnsTaken = 0;
+        return this.createLayout();
     }
 }
 const utilities = {
@@ -149,6 +176,7 @@ const setup = {
     hive: document.querySelector('.hive'),
     simButton: document.querySelector('.sim-button'),
     beeCounter: document.querySelector('.bee-counter'),
+    turnCounter: document.querySelector('.turn-counter'),
     gameSession: new GameSession(0, 0),
     gameLayout: null,
     hiveBoard: null,
@@ -169,7 +197,7 @@ const setup = {
     startGame() {
         this.gameLayout = this.gameSession.createLayout();
         this.mapLayoutInitial(this.hive, this.gameLayout);
-        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton, this.beeCounter, this.gameSession);
+        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton, this.beeCounter, this.turnCounter, this.gameSession);
         this.hiveBoard.clickToAddRemoveBee();
         this.hiveBoard.clickToSimulate();
     }
