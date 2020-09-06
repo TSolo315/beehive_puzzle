@@ -1,5 +1,5 @@
 class HiveBoard {
-    constructor(board, hive, simButton, beeCounter, turnCounter, playAgainButton, gameSession, updateList = []) {
+    constructor(board, hive, simButton, beeCounter, turnCounter, playAgainButton, gameSession, clickLock = false, updateList = []) {
         this.board = board;
         this.hive = hive;
         this.simButton = simButton;
@@ -7,6 +7,7 @@ class HiveBoard {
         this.turnCounter = turnCounter;
         this.playAgainButton = playAgainButton;
         this.gameSession = gameSession;
+        this.clickLock = clickLock;
         this.updateList = updateList;
         // autofilled
     }
@@ -61,6 +62,7 @@ class HiveBoard {
         return addedBee;
     }
     async simulate() {
+        this.clickLock = true;
         while (true) {
             await utilities.sleep(850);
             if (!this.processStep()) {
@@ -71,6 +73,9 @@ class HiveBoard {
     }
     clickToAddRemoveBee() {
         this.hive.addEventListener("click", (event) => {
+            if (this.clickLock) {
+                return;
+            }
             const element = event.target;
             if (element.classList.contains('hexagon')) {
                 let y_coordinate = parseInt(element.getAttribute('data-y-coordinate'));
@@ -144,6 +149,7 @@ class HiveBoard {
     }
     playAgain() {
         this.resetBoard();
+        this.clickLock = false;
         setup.overlay.setAttribute('class', 'overlay overlay-slidedown');
     }
     resetBoard() {

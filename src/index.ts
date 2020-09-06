@@ -1,4 +1,42 @@
-class HiveBoard {
+interface HiveBoardInterface {
+    board: boolean[][],
+    hive: HTMLDivElement,
+    simButton: HTMLButtonElement,
+    beeCounter: HTMLParagraphElement,
+    turnCounter: HTMLParagraphElement,
+    playAgainButton: HTMLButtonElement,
+    gameSession: GameSession,
+    addBee(y: number, x: number): void,
+    removeBee(y: number, x: number): void,
+    processStep(): boolean,
+    simulate(): Promise<void>,
+    clickToAddRemoveBee(): void,
+    clickToSimulate(): void,
+    clickToPlayAgain(): void,
+    updateBeeCounter(removed: boolean): void,
+    incrementTurnCounter(): void,
+    updateHive(): void,
+    calculateScore(): number,
+    simulationOver(): void,
+    playAgain(): void,
+    resetBoard(): void
+}
+
+type SetupType = {
+    hive: HTMLDivElement,
+    simButton: HTMLButtonElement,
+    beeCounter: HTMLParagraphElement,
+    turnCounter: HTMLParagraphElement,
+    overlay: HTMLDivElement,
+    playAgainButton: HTMLButtonElement,
+    gameSession: GameSession,
+    gameLayout: boolean[][],
+    hiveBoard: HiveBoard,
+    mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]): void,
+    startGame(): void,
+}
+
+class HiveBoard implements HiveBoardInterface {
 
     constructor(
         public board: boolean[][],
@@ -8,6 +46,7 @@ class HiveBoard {
         public turnCounter: HTMLParagraphElement,
         public playAgainButton: HTMLButtonElement,
         public gameSession: GameSession,
+        private clickLock: boolean=false,
         private updateList: number[][]=[]) {
         // autofilled
     }
@@ -66,6 +105,7 @@ class HiveBoard {
     }
 
     async simulate(): Promise<void> {
+        this.clickLock = true
         while (true) {
             await utilities.sleep(850)
             if (!this.processStep()) {
@@ -77,6 +117,9 @@ class HiveBoard {
 
     clickToAddRemoveBee(): void {
         this.hive.addEventListener("click", (event) => {
+            if (this.clickLock) {
+                return
+            }
             const element = event.target as HTMLDivElement;
             if (element.classList.contains('hexagon')) {
                 let y_coordinate: number = parseInt(element.getAttribute('data-y-coordinate')!);
@@ -153,6 +196,7 @@ class HiveBoard {
     }
     playAgain(): void {
         this.resetBoard()
+        this.clickLock = false
         setup.overlay.setAttribute('class', 'overlay overlay-slidedown');
     }
     resetBoard(): void {
@@ -221,22 +265,7 @@ const utilities = {
     }
 }
 
-type Setup = {
-    hive: HTMLDivElement,
-    simButton: HTMLButtonElement,
-    beeCounter: HTMLParagraphElement,
-    turnCounter: HTMLParagraphElement,
-    overlay: HTMLDivElement,
-    playAgainButton: HTMLButtonElement,
-    gameSession: GameSession,
-    gameLayout: boolean[][],
-    hiveBoard: HiveBoard,
-    mapLayoutInitial(hive: HTMLDivElement, layout: boolean[][]): void,
-    startGame(): void
-}
-
-
-const setup: Setup = {
+const setup: SetupType = {
 
     hive: document.querySelector('.hive'),
     simButton: document.querySelector('.sim-button'),
