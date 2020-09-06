@@ -6,6 +6,7 @@ class HiveBoard {
         public simButton: HTMLButtonElement,
         public beeCounter: HTMLParagraphElement,
         public turnCounter: HTMLParagraphElement,
+        public playAgainButton: HTMLButtonElement,
         public gameSession: GameSession,
         private updateList: number[][]=[]) {
         // autofilled
@@ -66,11 +67,12 @@ class HiveBoard {
 
     async simulate(): Promise<void> {
         while (true) {
-            await utilities.sleep(1000)
+            await utilities.sleep(850)
             if (!this.processStep()) {
                 break
             }
         }
+        this.simulationOver()
     }
 
     clickToAddRemoveBee(): void {
@@ -97,6 +99,12 @@ class HiveBoard {
         });
     }
 
+    clickToPlayAgain(): void {
+        this.playAgainButton.addEventListener("click", (event) => {
+            this.playAgain()
+        })
+    }
+
     updateBeeCounter(removed: boolean=false): void {
         if (removed) {
             this.gameSession.beesAdded -= 1
@@ -119,7 +127,34 @@ class HiveBoard {
         }
         this.updateList.length = 0
     }
-
+    calculateScore(): number {
+        let totalActiveTiles = 0
+        for (let row of this.board) {
+            for (let tile of row) {
+                if (tile) {
+                    totalActiveTiles+= 1
+                }
+            }
+        }
+        let missedTiles = 146 - totalActiveTiles
+        let beeScore = 146 - (this.gameSession.beesAdded * 2)
+        let turnScore = (100 - this.gameSession.turnsTaken - (missedTiles * 2))
+        return beeScore + turnScore
+    }
+    simulationOver(): void {
+        let score = this.calculateScore()
+        let puzzleBees = document.querySelector('#puzzle-bees')
+        let puzzleTurns = document.querySelector('#puzzle-turns')
+        let puzzleScore = document.querySelector('#puzzle-score')
+        puzzleBees.innerHTML = `Bees Placed: ${this.gameSession.beesAdded}`
+        puzzleTurns.innerHTML = `Turns Taken: ${this.gameSession.turnsTaken}`
+        puzzleScore.innerHTML = `Score: ${score}`
+        setup.overlay.setAttribute('class', 'overlay overlay-slidedown open');
+    }
+    playAgain(): void {
+        this.resetBoard()
+        setup.overlay.setAttribute('class', 'overlay overlay-slidedown');
+    }
     resetBoard(): void {
         this.board = this.gameSession.reset()
         let tile_rows = this.hive.children
@@ -191,6 +226,8 @@ type Setup = {
     simButton: HTMLButtonElement,
     beeCounter: HTMLParagraphElement,
     turnCounter: HTMLParagraphElement,
+    overlay: HTMLDivElement,
+    playAgainButton: HTMLButtonElement,
     gameSession: GameSession,
     gameLayout: boolean[][],
     hiveBoard: HiveBoard,
@@ -205,6 +242,8 @@ const setup: Setup = {
     simButton: document.querySelector('.sim-button'),
     beeCounter: document.querySelector('.bee-counter'),
     turnCounter: document.querySelector('.turn-counter'),
+    overlay: document.querySelector('.overlay'),
+    playAgainButton: document.querySelector('#play-again'),
     gameSession: new GameSession(0,0),
     gameLayout: null,
     hiveBoard: null,
@@ -228,9 +267,10 @@ const setup: Setup = {
     startGame() {
         this.gameLayout = this.gameSession.createLayout();
         this.mapLayoutInitial(this.hive, this.gameLayout)
-        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton, this.beeCounter, this.turnCounter, this.gameSession);
+        this.hiveBoard = new HiveBoard(this.gameLayout, this.hive, this.simButton, this.beeCounter, this.turnCounter, this.playAgainButton, this.gameSession);
         this.hiveBoard.clickToAddRemoveBee();
         this.hiveBoard.clickToSimulate();
+        this.hiveBoard.clickToPlayAgain();
     }
 }
 
