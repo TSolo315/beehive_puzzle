@@ -179,8 +179,18 @@ body {
   transition: transform 0.4s ease-in-out;
 }
 
-@media screen and (max-height: 30.5em) {
-  .overlay .modal {
-    margin: 25% auto;
+.restart-button {
+  min-width: 180px;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 21px;
+  color: white;
+  background-color: black;
+}
+
+@media only screen and (max-height: 800px) {
+  .modal {
+    margin: 30% auto;
+    height: 100%;
   }
 }
