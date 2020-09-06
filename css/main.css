@@ -16,17 +16,23 @@ body {
 
 .page-heading {
   width: 100%;
+  text-align: center;
+  margin-bottom: 0;
 }
 
-.page-heading .page-title {
-  text-align: center;
+.page-title {
   font-size: 3em;
   margin-bottom: 0;
 }
 
 .subtitle {
-  text-align: center;
   margin-top: .5em;
+}
+
+.rules-link {
+  margin-top: .25em;
+  color: orange;
+  font-size: 18px;
 }
 
 .counter-container {
@@ -34,6 +40,7 @@ body {
 }
 
 .bee-counter {
+  margin-top: .6em;
   text-align: center;
   color: yellow;
   font-weight: bold;
@@ -50,7 +57,7 @@ body {
 
 .hive {
   min-width: 905px;
-  margin-top:3em;
+  margin-top:2em;
   display:flex;
   flex-flow: column;
   align-items: center;
@@ -183,9 +190,25 @@ body {
   min-width: 180px;
   padding: 12px;
   border-radius: 10px;
-  font-size: 21px;
+  font-size: 22px;
   color: white;
   background-color: black;
+}
+
+.instruction-list {
+  text-align: center;
+  width: 100%;
+  color: orange;
+  font-size: 22px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.instruction-list ul {
+  list-style-type:none;
+}
+
+.instruction-list li {
+  margin-top: .5em;
 }
 
 @media only screen and (max-height: 800px) {
