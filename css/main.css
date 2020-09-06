@@ -197,10 +197,11 @@ body {
 
 .instruction-list {
   text-align: center;
-  width: 100%;
-  color: orange;
-  font-size: 22px;
-  font-family: 'Courier New', Courier, monospace;
+  margin: 0 auto;
+  width: 80%;
+  color: lightcoral;
+  font-size: 24px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .instruction-list ul {
@@ -208,7 +209,7 @@ body {
 }
 
 .instruction-list li {
-  margin-top: .5em;
+  margin-top: .75em;
 }
 
 @media only screen and (max-height: 800px) {
