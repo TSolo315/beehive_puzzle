@@ -193,6 +193,7 @@ body {
   font-size: 22px;
   color: white;
   background-color: black;
+  margin-bottom: 1em;
 }
 
 .instruction-list {
