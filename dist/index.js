@@ -113,7 +113,7 @@ class HiveBoard {
     }
     incrementTurnCounter() {
         this.gameSession.turnsTaken += 1;
-        this.turnCounter.innerHTML = `Turns Taken: ${this.gameSession.turnsTaken}`;
+        this.turnCounter.innerHTML = `Rounds Passed: ${this.gameSession.turnsTaken}`;
     }
     updateHive() {
         for (let entry of this.updateList) {
@@ -143,7 +143,7 @@ class HiveBoard {
         let puzzleTurns = document.querySelector('#puzzle-turns');
         let puzzleScore = document.querySelector('#puzzle-score');
         puzzleBees.innerHTML = `Bees Placed: ${this.gameSession.beesAdded}`;
-        puzzleTurns.innerHTML = `Turns Taken: ${this.gameSession.turnsTaken}`;
+        puzzleTurns.innerHTML = `Rounds Passed: ${this.gameSession.turnsTaken}`;
         puzzleScore.innerHTML = `Score: ${score}`;
         setup.overlay.setAttribute('class', 'overlay overlay-slidedown open');
     }
@@ -163,7 +163,7 @@ class HiveBoard {
             }
         }
         this.beeCounter.innerHTML = 'Bees Placed: 0';
-        this.turnCounter.innerHTML = 'Turns Taken: 0';
+        this.turnCounter.innerHTML = 'Rounds Passed: 0';
     }
 }
 class GameSession {

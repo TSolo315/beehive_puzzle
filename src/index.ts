@@ -159,7 +159,7 @@ class HiveBoard implements HiveBoardInterface {
 
     incrementTurnCounter(): void {
         this.gameSession.turnsTaken += 1
-        this.turnCounter.innerHTML = `Turns Taken: ${this.gameSession.turnsTaken}`
+        this.turnCounter.innerHTML = `Rounds Passed: ${this.gameSession.turnsTaken}`
     }
 
     updateHive(): void {
@@ -190,7 +190,7 @@ class HiveBoard implements HiveBoardInterface {
         let puzzleTurns = document.querySelector('#puzzle-turns')
         let puzzleScore = document.querySelector('#puzzle-score')
         puzzleBees.innerHTML = `Bees Placed: ${this.gameSession.beesAdded}`
-        puzzleTurns.innerHTML = `Turns Taken: ${this.gameSession.turnsTaken}`
+        puzzleTurns.innerHTML = `Rounds Passed: ${this.gameSession.turnsTaken}`
         puzzleScore.innerHTML = `Score: ${score}`
         setup.overlay.setAttribute('class', 'overlay overlay-slidedown open');
     }
@@ -210,7 +210,7 @@ class HiveBoard implements HiveBoardInterface {
             }
         }
         this.beeCounter.innerHTML = 'Bees Placed: 0'
-        this.turnCounter.innerHTML = 'Turns Taken: 0'
+        this.turnCounter.innerHTML = 'Rounds Passed: 0'
     }
 }
 
